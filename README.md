@@ -1,6 +1,6 @@
 # QueryForge — NL-to-SQL Engine. Natural language to SQL — no LLM required
 
-NL-to-SQL Engine. Natural language to SQL — no LLM required. QueryForge gives you a focused, inspectable implementation of that idea.
+NL-to-SQL Engine. Natural language to SQL — no LLM required.
 
 ## Why QueryForge
 
