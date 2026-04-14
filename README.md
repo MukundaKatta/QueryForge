@@ -1,54 +1,51 @@
-# 🔥 QueryForge
+# QueryForge — NL-to-SQL Engine. Natural language to SQL — no LLM required
 
-> Natural language to SQL — no LLM required
+NL-to-SQL Engine. Natural language to SQL — no LLM required. QueryForge gives you a focused, inspectable implementation of that idea.
 
-[![CI](https://github.com/MukundaKatta/QueryForge/actions/workflows/ci.yml/badge.svg)](https://github.com/MukundaKatta/QueryForge/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)]()
+## Why QueryForge
 
-## What is QueryForge?
-QueryForge converts natural language questions into SQL queries using rule-based pattern matching and schema awareness. It handles common query patterns without any LLM API calls, with optional LLM fallback for complex questions.
+QueryForge exists to make this workflow practical. Nl-to-sql engine. natural language to sql — no llm required. It favours a small, inspectable surface over sprawling configuration.
 
-## ✨ Features
-- ✅ Rule-based NL-to-SQL for common patterns
-- ✅ Schema-aware query generation
-- ✅ Support for SELECT, WHERE, JOIN, GROUP BY, ORDER BY
-- ✅ SQL validation and safety checks
-- ✅ Multiple dialect support (SQLite, PostgreSQL, MySQL)
-- 🔜 LLM fallback for complex queries
-- 🔜 Query explanation in plain English
+## Features
 
-## 🚀 Quick Start
+- `Schema` — exported from `src/queryforge/core.py`
+- Included test suite
+- Dedicated documentation folder
+
+## Tech Stack
+
+- **Runtime:** Python
+
+## How It Works
+
+The codebase is organised into `docs/`, `src/`, `tests/`. The primary entry points are `src/queryforge/core.py`, `src/queryforge/__init__.py`. `src/queryforge/core.py` exposes `Schema` — the core types that drive the behaviour.
+
+## Getting Started
+
 ```bash
-pip install queryforge
+pip install -e .
 ```
+
+## Usage
+
 ```python
-from queryforge import QueryEngine, Schema
+from queryforge.core import Schema
 
-schema = Schema.from_dict({
-    "users": ["id", "name", "email", "created_at"],
-    "orders": ["id", "user_id", "total", "status"]
-})
-
-engine = QueryEngine(schema)
-sql = engine.translate("show me all users who placed orders over $100")
-print(sql)
-# SELECT users.* FROM users JOIN orders ON users.id = orders.user_id WHERE orders.total > 100
+instance = Schema()
+# See the source for the full API
 ```
 
-## 🏗️ Architecture
-```mermaid
-graph TD
-    A[Natural Language] --> B[Tokenizer]
-    B --> C[Intent Classifier]
-    C --> D[Schema Mapper]
-    D --> E[SQL Builder]
-    E --> F[Validator]
-    F --> G[SQL Query]
+## Project Structure
+
 ```
-
-## 📖 Inspired By
-Inspired by text-to-SQL research and tools like SQLCoder, but built as a lightweight rule-based library that works offline.
-
----
-**Built by [Officethree Technologies](https://github.com/MukundaKatta)** | Made with ❤️ and AI
+QueryForge/
+├── .env.example
+├── CONTRIBUTING.md
+├── LICENSE
+├── Makefile
+├── README.md
+├── docs/
+├── pyproject.toml
+├── src/
+├── tests/
+```
