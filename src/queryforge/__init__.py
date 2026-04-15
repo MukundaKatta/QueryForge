@@ -1,5 +1,6 @@
 """QueryForge - Natural language to SQL, no LLM required."""
 
+from queryforge.config import Config
 from queryforge.core import (
     IntentClassifier,
     QueryEngine,
@@ -9,16 +10,19 @@ from queryforge.core import (
     Tokenizer,
     Validator,
 )
-from queryforge.config import Config
+from queryforge.executor import Executor, QueryResult, schema_from_sqlite
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __all__ = [
-    "QueryEngine",
-    "Schema",
-    "Tokenizer",
+    "Config",
+    "Executor",
     "IntentClassifier",
+    "QueryEngine",
+    "QueryResult",
+    "Schema",
     "SchemaMapper",
     "SQLBuilder",
+    "Tokenizer",
     "Validator",
-    "Config",
+    "schema_from_sqlite",
 ]

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "queryforge"
-version = "0.1.0"
+version = "0.2.0"
 description = "Natural language to SQL — no LLM required"
 readme = "README.md"
 license = "MIT"
@@ -30,6 +30,9 @@ dev = [
     "ruff>=0.4",
     "mypy>=1.10",
 ]
+
+[project.scripts]
+queryforge = "queryforge.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/MukundaKatta/QueryForge"
