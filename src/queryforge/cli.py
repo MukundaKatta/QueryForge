@@ -81,11 +81,14 @@ def _cmd_translate(args: argparse.Namespace) -> int:
     schema = _resolve_schema(args)
     engine = QueryEngine(schema, Config(validate=not args.no_validate))
     try:
-        sql = engine.translate(args.question)
+        explanation = engine.explain(args.question)
     except ValueError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
-    print(sql)
+    if args.explain:
+        print(explanation.render())
+    else:
+        print(explanation.sql)
     return 0
 
 
@@ -170,6 +173,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_trans = sub.add_parser("translate", help="Translate a question to SQL and print it.")
     p_trans.add_argument("question")
+    p_trans.add_argument("--explain", action="store_true",
+                         help="Print the full pipeline trace (tokens, intent, entities) before the SQL.")
     _common(p_trans)
     p_trans.set_defaults(func=_cmd_translate)
 

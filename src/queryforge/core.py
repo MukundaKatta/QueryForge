@@ -386,6 +386,12 @@ class QueryEngine:
 
     def translate(self, question: str) -> str:
         """Convert a natural-language *question* to a SQL query string."""
+        return self.explain(question).sql
+
+    def explain(self, question: str) -> "Explanation":
+        """Same as :meth:`translate`, but also returns the intermediate
+        decisions (tokens, intent, mapped entities) so callers can show
+        *why* the SQL came out the way it did."""
         tokens = self.tokenizer.tokenize(question)
         clean_tokens = self.tokenizer.remove_stop_words(tokens)
         intent = self.classifier.classify(question, clean_tokens)
@@ -397,4 +403,54 @@ class QueryEngine:
             if not ok:
                 raise ValueError(f"Generated SQL failed validation: {msg}")
 
-        return normalize_whitespace(sql)
+        return Explanation(
+            question=question,
+            tokens=tokens,
+            clean_tokens=clean_tokens,
+            intent=intent,
+            entities=entities,
+            sql=normalize_whitespace(sql),
+        )
+
+
+# ---------------------------------------------------------------------------
+# Explanation
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class Explanation:
+    """Step-by-step trace of the translation pipeline.
+
+    Useful for debugging "why did it pick that table?" or for surfacing
+    the engine's reasoning to end users in a UI.
+    """
+
+    question: str
+    tokens: list[str]
+    clean_tokens: list[str]
+    intent: Intent
+    entities: MappedEntities
+    sql: str
+
+    def render(self) -> str:
+        """Pretty-print the explanation as a single human-readable string."""
+        lines = [
+            f"question: {self.question}",
+            f"tokens:   {self.tokens}",
+            f"keywords: {self.clean_tokens}",
+            f"intent:   action={self.intent.action}"
+            f"  where={self.intent.has_where}  join={self.intent.has_join}"
+            f"  group_by={self.intent.has_group_by}  order_by={self.intent.has_order_by}"
+            f"  limit={self.intent.limit}",
+            f"primary table: {self.entities.primary_table}",
+            f"join table:    {self.entities.join_table}",
+            f"columns:       {self.entities.columns}",
+            f"where col/op/val: {self.entities.where_column} {self.entities.where_op}"
+            f" {self.entities.where_value}",
+            f"agg col:       {self.entities.agg_column}",
+            f"order col:     {self.entities.order_column}",
+            "",
+            f"sql: {self.sql}",
+        ]
+        return "\n".join(lines)

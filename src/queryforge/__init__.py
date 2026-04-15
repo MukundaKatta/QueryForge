@@ -2,6 +2,7 @@
 
 from queryforge.config import Config
 from queryforge.core import (
+    Explanation,
     IntentClassifier,
     QueryEngine,
     Schema,
@@ -16,6 +17,7 @@ __version__ = "0.2.0"
 __all__ = [
     "Config",
     "Executor",
+    "Explanation",
     "IntentClassifier",
     "QueryEngine",
     "QueryResult",

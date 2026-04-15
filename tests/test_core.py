@@ -93,3 +93,34 @@ class TestSchema:
         result = schema.detect_join_column("orders", "users")
         assert result is not None
         assert "user_id" in result[0] or "user_id" in result[1]
+
+
+# ---------------------------------------------------------------------------
+# Explanation
+# ---------------------------------------------------------------------------
+
+
+def test_explain_returns_pipeline_trace() -> None:
+    from queryforge import QueryEngine, Schema
+
+    schema = Schema.from_dict({"customers": ["id", "name", "age"]})
+    engine = QueryEngine(schema)
+    e = engine.explain("how many customers over 30")
+
+    assert e.question == "how many customers over 30"
+    assert "customers" in e.tokens
+    assert "customers" in e.clean_tokens
+    assert e.intent.action == "count"
+    assert e.intent.has_where
+    assert e.entities.primary_table == "customers"
+    assert "COUNT" in e.sql.upper()
+
+
+def test_explanation_render_includes_key_fields() -> None:
+    from queryforge import QueryEngine, Schema
+
+    engine = QueryEngine(Schema.from_dict({"orders": ["id", "total"]}))
+    rendered = engine.explain("top 5 orders").render()
+    assert "intent:" in rendered
+    assert "primary table:" in rendered
+    assert "sql:" in rendered
